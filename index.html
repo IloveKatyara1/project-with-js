@@ -38,7 +38,7 @@
     </header>
     <main class="main">
         <div class="main__add-company">
-            <button class="main__add-company__btn">
+            <button class="btn_defoult">
                 <span></span>
                 <span></span>
             </button>
@@ -47,13 +47,22 @@
                 <input name="name" required placeholder="введіть вашого головного" type="name">
                 <input name="name" required placeholder="введіть його контакти" type="text">
                 <input name="name" required placeholder="введіть кількість учасників" type="number">
-                <button class="main__add-company__btn main__add-company__form__submit">
+                <button class="btn_defoult btn_dottom">
                     <span></span>
                     <span></span>
                 </button>
             </form>
         </div>
     </main>
+    <div class="popup">
+        <div class="popup__card">
+            не коректно введені дані, перевірьте чи ви правильно їх ввели
+            <button class="btn_defoult btn_dottom btn_active" id="popupBtn">
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
     <script src="./js/index.js"></script>
 </body>
 </html>

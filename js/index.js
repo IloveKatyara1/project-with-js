@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
     const addCompanyDefolt = `
-        <button class="main__add-company__btn">
+        <button class="btn_defoult">
             <span></span>
             <span></span>
         </button>
@@ -9,12 +9,13 @@ window.addEventListener('DOMContentLoaded', () => {
             <input name="name" required placeholder="введіть вашого головного" type="name">
             <input name="name" required placeholder="введіть його контакти" type="text">
             <input name="name" required placeholder="введіть кількість учасників" type="number">
-            <button class="main__add-company__btn main__add-company__form__submit">
+            <button class="btn_defoult btn_dottom">
                 <span></span>
                 <span></span>
             </button>
         </form>
     `;
+    
     const hamburger = document.querySelector('.header__hamburger'),
           logo = document.querySelector('.header__logo'),
           nav = document.querySelector('.header__nav'),
@@ -27,12 +28,14 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     const addCompanyFnc = (card) => {
-        const addForm = card.querySelector('.main__add-company__btn'),
+        const addForm = card.querySelector('.btn_defoult'),
               form = card.querySelector('.main__add-company__form'),
-              submit = form.querySelector('.main__add-company__form__submit');
+              submit = form.querySelector('.btn_dottom'),
+              popup = document.querySelector('.popup'),
+              popupBtn = popup.querySelector('#popupBtn');
 
         addForm.addEventListener('click', () => {
-            addForm.classList.toggle('main__add-company__btn_active');
+            addForm.classList.toggle('btn_active');
             form.classList.toggle('main__add-company__form_active');
             card.classList.toggle('main__add-company_active');
         });
@@ -45,11 +48,28 @@ window.addEventListener('DOMContentLoaded', () => {
             let contacts = form.children[2].value.trim();
             let num = form.children[3].value.trim();
 
-            if (nameCompany == false || nameHead == false || contacts == false || num == false) {
-                alert('не правильно');
+            if (nameCompany == false || nameHead == false || contacts == false || num == false ||
+                typeof(nameCompany) == 'number' || typeof(nameHead) == 'number' || typeof(contacts) == 'number') {
+                popup.style.cssText = 'display: flex;';
+
+                popupBtn.addEventListener('click', () => {
+                    popup.style.cssText = 'display: none;';
+                });
             } else {
+                if (nameCompany.length > 10) {
+                    nameCompany = `${nameCompany.slice(1, 10)}...`;
+                }
+                if (nameHead.length > 10) {
+                    nameHead = `${nameHead.slice(1, 10)}...`;
+                }
+                if (contacts.length > 10) {
+                    contacts = `${contacts.slice(1, 10)}...`;
+                }
+                if (num.length > 10) {
+                    num = `${num.slice(1, 10)}...`;
+                }
                 card.innerHTML = `
-                    <button class="main__add-company__btn main__add-company__btn_active main__add-company__btn_done">
+                    <button class="btn_defoult btn_active btn_done">
                         <span></span>
                         <span></span>
                     </button>
@@ -65,38 +85,73 @@ window.addEventListener('DOMContentLoaded', () => {
                     <p class="main__add-company__data">
                         Кількість учасників: ${num}
                     </p>
-                    <button class="main__add-company__btn main__add-company__form__submit" id="btn_add-newsct">
+                    <button class="btn_defoult btn_dottom"
+                    id="btn_add-newsct">
                         <span></span>
                         <span></span>
                     </button> 
                 `;
 
-                card.classList.remove('main__add-company_active');
-
-                const addNewSct = document.querySelector('#btn_add-newsct');
-                
-                document.querySelector('.main__add-company__btn_done').addEventListener('click', () => {
-                    addCompany.innerHTML = `${addCompanyDefolt}`;
-
-                    addCompanyFnc(addCompany);
-                });
-
-                addNewSct.addEventListener('click', e => {
-                    addNewSct.classList.toggle('main__add-company__btn_active');
-
-                    const newForm = document.createElement('div');
-
-                    newForm.classList.toggle('main__add-company');
-                    // newForm.classList.toggle('main__add-company-new');
-
-                    document.querySelector('main').append(newForm);
-
-                    newForm.innerHTML = `${addCompanyDefolt}`;
-
-                    addCompanyFnc(newForm);
-                });
-            
+                card.classList.remove('main__add-company_active');  
             }
+            
+            const addNewSct = card.querySelector('#btn_add-newsct');
+            const btnDone = card.querySelector('.btn_done');
+
+            btnDone.addEventListener('click', () => {
+                function removeRightSctBtnDone() {
+                    if (btnDone.parentElement.nextElementSibling) {
+                        btnDone.parentElement.remove();
+                    }
+                }
+
+                removeRightSctBtnDone();
+
+                card.innerHTML = `${addCompanyDefolt}`;
+
+                addCompanyFnc(card);
+            });
+
+            let value = true; 
+
+            addNewSct.addEventListener('click', () => {
+                function addRemoveSct(valueFnc) {
+                    if (!valueFnc) {
+                        const removeRightSct = card.querySelector('.dtnsClose');
+
+                        function removeRightSctFnc() {
+                            if (removeRightSct.parentElement.nextElementSibling) {
+                                removeRightSct.parentElement.nextElementSibling.remove();
+                    
+                                removeRightSct.classList.remove('btn_active');
+                                removeRightSct.classList.remove('dtnsClose');
+                    
+                                removeRightSctFnc();
+                            }
+                        }
+
+                        removeRightSctFnc();
+    
+                        value = true;
+                    } else if (valueFnc) {
+                        addNewSct.classList.toggle('btn_active');
+                        addNewSct.classList.add('dtnsClose');
+        
+                        const newForm = document.createElement('div');
+                
+                        newForm.classList.toggle('main__add-company');
+                
+                        document.querySelector('main').append(newForm);
+                
+                        newForm.innerHTML = `${addCompanyDefolt}`;
+                
+                        addCompanyFnc(newForm); 
+    
+                        value = false; 
+                    } 
+                }
+                addRemoveSct(value);
+            });
         });
     };
     addCompanyFnc(addCompany);
